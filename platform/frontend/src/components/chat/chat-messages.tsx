@@ -21,6 +21,7 @@ import {
   ToolInput,
   ToolOutput,
 } from "@/components/ai-elements/tool";
+import { McpUIIntegration } from './mcp-ui-integration';
 
 interface ChatMessagesProps {
   messages: UIMessage[];
@@ -293,6 +294,11 @@ function MessageTool({
             errorText={errorText}
           />
         )}
+        {/* MCP UI Integration */}
+        <McpUIIntegration 
+          toolOutput={toolResultPart?.output || part.output}
+          className="mt-4"
+        />
       </ToolContent>
     </Tool>
   );
@@ -307,6 +313,7 @@ const tryToExtractErrorFromOutput = (output: unknown) => {
     return undefined;
   }
 };
+
 const getHeaderState = ({
   state,
   toolResultPart,
