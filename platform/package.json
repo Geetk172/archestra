@@ -41,5 +41,8 @@
       "express": "5.2.0"
     }
   },
-  "packageManager": "pnpm@10.24.0"
+  "packageManager": "pnpm@10.24.0",
+  "dependencies": {
+    "playwright": "^1.57.0"
+  }
 }

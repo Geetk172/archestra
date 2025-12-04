@@ -24,6 +24,7 @@ import {
   type ToolInvocation,
   type TrustedData,
 } from "@/types";
+import { getBrowserMcpTools, callBrowserMcpTool } from "./browser-mcp-server";
 
 /**
  * Constants for Archestra MCP server
@@ -90,7 +91,7 @@ export interface ArchestraContext {
 export const isArchestraMcpServerTool = (toolName: string): boolean => {
   return toolName.startsWith(
     `${ARCHESTRA_MCP_SERVER_NAME}${MCP_SERVER_TOOL_NAME_SEPARATOR}`,
-  );
+  ) || toolName.startsWith("archestra-browser__");
 };
 
 /**
@@ -102,6 +103,15 @@ export async function executeArchestraTool(
   context: ArchestraContext,
 ): Promise<CallToolResult> {
   const { profile } = context;
+
+  // Handle browser MCP tools
+  if (toolName.startsWith("archestra-browser__")) {
+    logger.info(
+      { profileId: profile.id, toolName, args },
+      "browser MCP tool called",
+    );
+    return await callBrowserMcpTool(toolName, args || {});
+  }
 
   if (toolName === TOOL_WHOAMI_FULL_NAME) {
     logger.info(
@@ -1481,6 +1491,7 @@ export async function executeArchestraTool(
  */
 export function getArchestraMcpTools(): Tool[] {
   return [
+    ...getBrowserMcpTools(), // Add our browser tools first
     {
       name: TOOL_WHOAMI_FULL_NAME,
       title: "Who Am I",
